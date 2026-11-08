@@ -1,0 +1,17 @@
+{
+  "_comment": "Feed list for build_feeds.py. group = federal | press. Edit freely; each run reports per-source status in feeds.json.",
+  "sources": [
+    {"label": "CISA Advisories",   "group": "federal", "url": "https://www.cisa.gov/cybersecurity-advisories/all.xml"},
+    {"label": "CISA News",         "group": "federal", "url": "https://www.cisa.gov/news.xml"},
+    {"label": "FBI",               "group": "federal", "url": "https://www.fbi.gov/feeds/national-press-releases/rss.xml"},
+    {"label": "DOJ",               "group": "federal", "url": "https://www.justice.gov/feeds/opa/justice-news.xml"},
+    {"label": "NSA",               "group": "federal", "url": "https://www.nsa.gov/DesktopModules/ArticleCS/RSS.ashx?ContentType=1&Site=920&max=10"},
+    {"label": "BleepingComputer",  "group": "press",   "url": "https://www.bleepingcomputer.com/feed/"},
+    {"label": "Dark Reading",      "group": "press",   "url": "https://www.darkreading.com/rss.xml"},
+    {"label": "The Record",        "group": "press",   "url": "https://therecord.media/feed"},
+    {"label": "The Hacker News",   "group": "press",   "url": "https://feeds.feedburner.com/TheHackersNews"},
+    {"label": "Krebs on Security", "group": "press",   "url": "https://krebsonsecurity.com/feed/"},
+    {"label": "SecurityWeek",      "group": "press",   "url": "https://www.securityweek.com/feed/"},
+    {"label": "CyberScoop",        "group": "press",   "url": "https://cyberscoop.com/feed/"}
+  ]
+}
