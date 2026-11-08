@@ -1,0 +1,173 @@
+<!-- BWF-SAM public dashboard · HTML block · 1.2-pub
+     Paste into a Custom HTML block. Load bwf-sam-public.js after it.
+     data-kev-url   : CISA KEV JSON (browser-readable mirror)
+     data-feeds-url : feeds.json built by the GitHub workflow (replace ACCOUNT) -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap">
+<style>
+#bwf-sam{
+  --bg-primary:#1A1D23;--bg-secondary:#22262E;--accent-green:#78866B;--accent-sage:#A9BA9D;
+  --gray-mid:#4A4E57;--gray-light:#8A8E97;--text-primary:#D4D8E1;--text-bright:#F0F2F5;
+  --f-display:'Share Tech Mono','Courier New',monospace;--f-data:'JetBrains Mono',ui-monospace,monospace;--f-body:'Inter',system-ui,sans-serif;
+  background:var(--bg-primary);color:var(--text-primary);font-family:var(--f-body);font-size:15px;line-height:1.6;
+  padding:24px max(16px,env(safe-area-inset-left,0px)) 40px;color-scheme:dark;text-align:left;
+}
+#bwf-sam *,#bwf-sam *::before,#bwf-sam *::after{box-sizing:border-box}
+#bwf-sam .wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:28px;background:var(--bg-primary);color:var(--text-primary)}
+#bwf-sam a{color:var(--accent-sage);text-decoration:underline;text-decoration-color:var(--gray-mid);text-underline-offset:3px;box-shadow:none;border:0}
+#bwf-sam a:hover{color:var(--text-bright);text-decoration-color:var(--accent-sage)}
+#bwf-sam a:focus-visible,#bwf-sam input:focus-visible{outline:2px solid var(--accent-green);outline-offset:2px}
+#bwf-sam h1,#bwf-sam h2,#bwf-sam h3{font-family:var(--f-display);font-weight:400;letter-spacing:.07em;line-height:1.2;margin:0;padding:0;text-wrap:balance;border:0;background:none}
+#bwf-sam h1{font-size:clamp(1.5rem,4vw,2.4rem);color:var(--text-bright)}
+#bwf-sam h2{font-size:clamp(1.1rem,2.6vw,1.45rem);color:var(--text-bright);text-transform:uppercase}
+#bwf-sam h3{font-size:.95rem;color:var(--accent-sage);text-transform:uppercase}
+#bwf-sam p{margin:0}
+#bwf-sam .meta{font-size:.8rem;color:var(--gray-light)}
+#bwf-sam .mono{font-family:var(--f-data);font-variant-numeric:tabular-nums}
+#bwf-sam .tag{display:inline-block;background:transparent;color:var(--accent-green);border:1px solid var(--accent-green);font-family:var(--f-data);font-size:.66rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:.08rem .45rem;border-radius:2px;white-space:nowrap}
+#bwf-sam .tag.muted{color:var(--gray-light);border-color:var(--gray-mid)}
+
+/* ticker */
+#bwf-sam .ticker{display:flex;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--gray-mid);border-radius:4px;overflow:hidden;min-width:0}
+#bwf-sam .ticker .lbl{flex:none;display:flex;flex-direction:column;justify-content:center;gap:1px;padding:8px 14px;background:var(--gray-mid);color:var(--text-bright);font-family:var(--f-display);letter-spacing:.14em;font-size:.78rem;text-transform:uppercase}
+#bwf-sam .ticker .lbl small{font-family:var(--f-data);letter-spacing:0;font-size:.66rem;color:var(--text-primary);text-transform:none}
+#bwf-sam .ticker .rail{position:relative;flex:1;min-width:0;overflow:hidden;display:flex;align-items:center;background:var(--bg-secondary);color:var(--text-primary);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 24px,#000 calc(100% - 24px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 24px,#000 calc(100% - 24px),transparent 100%)}
+#bwf-sam .ticker .track{display:flex;width:max-content;animation:bwfTick var(--dur,120s) linear infinite}
+#bwf-sam .ticker:hover .track,#bwf-sam .ticker:focus-within .track{animation-play-state:paused}
+#bwf-sam .ticker .run{display:flex}
+#bwf-sam .ticker .tk{display:flex;align-items:baseline;gap:10px;padding:10px 28px 10px 0;white-space:nowrap;font-size:.88rem}
+#bwf-sam .ticker .tk::before{content:"//";color:var(--accent-green);font-family:var(--f-data);padding-left:28px}
+#bwf-sam .ticker .tk time{font-family:var(--f-data);font-size:.74rem;color:var(--gray-light)}
+#bwf-sam .ticker .tk .src{font-family:var(--f-data);font-size:.7rem;color:var(--accent-sage);letter-spacing:.06em;text-transform:uppercase}
+#bwf-sam .ticker .tk a{color:var(--text-bright);text-decoration:none}
+#bwf-sam .ticker .tk a:hover,#bwf-sam .ticker .tk a:focus-visible{color:var(--accent-sage);text-decoration:underline}
+#bwf-sam .ticker .note{padding:10px 16px;font-size:.84rem;color:var(--gray-light)}
+@keyframes bwfTick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){#bwf-sam .ticker .track{animation:none}#bwf-sam .ticker .rail{overflow-x:auto;-webkit-mask-image:none;mask-image:none}}
+@media (max-width:600px){#bwf-sam .ticker{flex-direction:column}#bwf-sam .ticker .lbl{flex-direction:row;justify-content:space-between;align-items:baseline}}
+
+/* header */
+#bwf-sam header{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px 32px;align-items:flex-end;border-bottom:1px solid var(--gray-mid);padding-bottom:18px;background:var(--bg-primary);color:var(--text-primary)}
+#bwf-sam .wordmark{font-family:var(--f-display);font-size:.85rem;letter-spacing:.22em;color:var(--gray-light)}
+#bwf-sam .wordmark b{color:var(--text-bright);font-weight:400}
+#bwf-sam .hdr-left{display:flex;flex-direction:column;gap:8px;min-width:0}
+#bwf-sam .status{display:grid;grid-template-columns:auto auto;gap:2px 14px;font-size:.78rem;margin:0}
+#bwf-sam .status dt{color:var(--gray-light);font-family:var(--f-display);letter-spacing:.08em;text-transform:uppercase}
+#bwf-sam .status dd{margin:0;color:var(--text-primary);font-family:var(--f-data)}
+
+/* strip */
+#bwf-sam .strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--gray-mid);color:var(--text-primary);border:1px solid var(--gray-mid);border-radius:4px;overflow:hidden}
+#bwf-sam .strip>div{background:var(--bg-secondary);color:var(--text-primary);padding:14px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
+#bwf-sam .strip .k{font-family:var(--f-display);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gray-light)}
+#bwf-sam .strip .v{font-family:var(--f-data);font-size:1.6rem;color:var(--text-bright);font-variant-numeric:tabular-nums;line-height:1.2}
+#bwf-sam .strip .s{font-size:.78rem;color:var(--gray-light)}
+#bwf-sam .yoy{display:grid;grid-template-columns:auto auto auto;justify-content:start;gap:1px 14px;margin-top:4px;font-family:var(--f-data);font-size:.74rem;color:var(--text-primary);font-variant-numeric:tabular-nums}
+#bwf-sam .yoy .h{font-family:var(--f-display);letter-spacing:.08em;text-transform:uppercase;font-size:.62rem;color:var(--gray-light)}
+#bwf-sam .yoy .y{color:var(--gray-light)}
+#bwf-sam .yoy .n{text-align:right}
+@media (max-width:760px){#bwf-sam .strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* sections + panels */
+#bwf-sam section{display:flex;flex-direction:column;gap:14px;background:var(--bg-primary);color:var(--text-primary)}
+#bwf-sam .sec-head{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;justify-content:space-between}
+#bwf-sam .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+@media (max-width:900px){#bwf-sam .grid2{grid-template-columns:minmax(0,1fr)}}
+#bwf-sam .panel{background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--gray-mid);border-radius:4px;display:flex;flex-direction:column;min-width:0}
+#bwf-sam .panel.wide{grid-column:1/-1}
+#bwf-sam .ph{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 10px;padding:12px 16px;border-bottom:1px solid var(--gray-mid);background:var(--bg-secondary);color:var(--text-primary)}
+#bwf-sam .item{display:grid;grid-template-columns:5.6rem minmax(0,1fr);gap:4px 14px;padding:11px 16px;border-top:1px solid var(--gray-mid)}
+#bwf-sam .list>.item:first-child{border-top:0}
+#bwf-sam .item .d{font-family:var(--f-data);font-size:.74rem;color:var(--gray-light);padding-top:2px;font-variant-numeric:tabular-nums;line-height:1.35}
+#bwf-sam .item .t{font-weight:500;color:var(--text-bright);font-size:.92rem;line-height:1.4}
+#bwf-sam .item .t a{color:var(--text-bright);text-decoration:none}
+#bwf-sam .item .t a:hover,#bwf-sam .item .t a:focus-visible{color:var(--accent-sage);text-decoration:underline}
+#bwf-sam .item .row{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px;align-items:center}
+#bwf-sam .empty{padding:14px 16px;font-size:.86rem;color:var(--gray-light)}
+
+/* charts + table */
+#bwf-sam .chart{padding:12px 16px 16px;position:relative}
+#bwf-sam .chart svg{display:block;width:100%;height:auto;overflow:visible}
+#bwf-sam .chart .cap{font-size:.8rem;color:var(--gray-light);margin:0 0 6px}
+#bwf-sam .tip{position:absolute;pointer-events:none;background:var(--bg-primary);color:var(--text-bright);border:1px solid var(--gray-mid);border-radius:3px;font-family:var(--f-data);font-size:.75rem;padding:5px 8px;white-space:nowrap;transform:translate(-50%,-110%);z-index:2}
+#bwf-sam .tbl-wrap{overflow-x:auto;max-height:560px}
+#bwf-sam table{border-collapse:collapse;width:100%;font-size:.82rem;min-width:760px;margin:0;background:var(--bg-secondary);color:var(--text-primary);border:0}
+#bwf-sam th,#bwf-sam td{text-align:left;padding:8px 12px;border:0;border-top:1px solid var(--gray-mid);vertical-align:top;background:var(--bg-secondary);color:var(--text-primary)}
+#bwf-sam th{font-family:var(--f-display);font-weight:400;letter-spacing:.1em;text-transform:uppercase;font-size:.7rem;color:var(--gray-light);border-top:0;position:sticky;top:0;z-index:1}
+#bwf-sam td.mono{white-space:nowrap}
+#bwf-sam tbody tr:hover td{background:var(--bg-primary);color:var(--text-bright)}
+#bwf-sam .filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+#bwf-sam .filters label{font-size:.75rem;color:var(--gray-light);font-family:var(--f-display);letter-spacing:.08em;text-transform:uppercase}
+#bwf-sam .filters input{background:var(--bg-primary);color:var(--text-primary);border:1px solid var(--gray-mid);border-radius:3px;padding:6px 10px;font-family:var(--f-data);font-size:.8rem;width:min(260px,100%);margin:0;box-shadow:none}
+#bwf-sam .filters input:focus{border-color:var(--accent-green);outline:none}
+
+/* sources */
+#bwf-sam .health{display:flex;flex-wrap:wrap;gap:6px;padding:14px 16px}
+#bwf-sam footer{font-size:.74rem;color:var(--gray-light);border-top:1px solid var(--gray-mid);padding-top:14px;font-family:var(--f-data);background:var(--bg-primary)}
+#bwf-sam .bar{transition:opacity .15s}
+@media (prefers-reduced-motion:reduce){#bwf-sam .bar{transition:none}}
+</style>
+
+<div id="bwf-sam"
+     data-kev-url="https://raw.githubusercontent.com/cisagov/kev-data/main/known_exploited_vulnerabilities.json"
+     data-feeds-url="https://raw.githubusercontent.com/ACCOUNT/bwf-dash/main/feeds.json">
+<div class="wrap">
+
+  <div class="ticker" role="region" aria-label="Breaking news, last 12 hours">
+    <div class="lbl">Breaking<small data-bwf="tk-asof">loading…</small></div>
+    <div class="rail"><div class="track" data-bwf="tk-track"><div class="note">Loading headlines…</div></div></div>
+  </div>
+
+  <header>
+    <div class="hdr-left">
+      <div class="wordmark"><b>BACKWATERFX</b></div>
+      <h1>BWF-SAM · Situational Awareness</h1>
+      <p class="meta">Live from public federal and press sources. Refreshes when the page loads.</p>
+    </div>
+    <dl class="status">
+      <dt>KEV catalog</dt><dd data-bwf="kev-ver">loading…</dd>
+      <dt>KEV loaded</dt><dd data-bwf="kev-at">—</dd>
+      <dt>Feeds built</dt><dd data-bwf="feeds-at">—</dd>
+    </dl>
+  </header>
+
+  <div class="strip" aria-label="KEV summary">
+    <div><span class="k">KEV added · 30d</span><span class="v" data-bwf="s-30">—</span><span class="s">CISA Known Exploited Vulnerabilities</span></div>
+    <div><span class="k" data-bwf="s-ytd-k">KEV added · YTD</span><span class="v" data-bwf="s-ytd">—</span><div class="yoy" data-bwf="s-yoy" aria-label="Prior years"></div></div>
+    <div><span class="k">Median fix window · 90d</span><span class="v" data-bwf="s-win">—</span><span class="s" data-bwf="s-win-s">days from add to federal due date</span></div>
+    <div><span class="k">Ransomware-tagged · 30d</span><span class="v" data-bwf="s-rw">—</span><span class="s">KEV “Known” campaign use</span></div>
+  </div>
+
+  <section aria-label="Headlines">
+    <div class="sec-head"><h2>Headlines</h2><p class="meta">Newest first. Federal sources listed separately.</p></div>
+    <div class="grid2">
+      <div class="panel"><div class="ph"><h3>Federal</h3><span class="meta mono" data-bwf="n-fed">last 14 days</span></div><div class="list" data-bwf="fed"><div class="empty">Loading…</div></div></div>
+      <div class="panel"><div class="ph"><h3>Press</h3><span class="meta mono" data-bwf="n-press">last 48 hours</span></div><div class="list" data-bwf="press"><div class="empty">Loading…</div></div></div>
+      <div class="panel wide"><div class="ph"><h3>Contractor indictments · watch</h3><span class="meta mono">contractor + indicted / charged / arrested / pleaded / sentenced, or Deloitte</span></div><div class="list" data-bwf="watch"><div class="empty">Loading…</div></div></div>
+    </div>
+  </section>
+
+  <section aria-label="KEV telemetry">
+    <div class="sec-head"><h2>KEV telemetry</h2><p class="meta">Computed in your browser from the CISA catalog. Hover a bar for its value.</p></div>
+    <div class="grid2">
+      <div class="panel"><div class="ph"><h3>Weekly additions</h3><span class="meta mono">12 weeks · Mon start</span></div><div class="chart" data-bwf="c-weeks"><p class="cap">Entries added per week</p></div></div>
+      <div class="panel"><div class="ph"><h3>Median fix window</h3><span class="meta mono">days add → due</span></div><div class="chart" data-bwf="c-win"><p class="cap">Median days allowed to remediate, by month added</p></div></div>
+    </div>
+    <div class="panel">
+      <div class="ph"><h3>Added · last 30 days</h3>
+        <div class="filters"><label for="bwf-kev-q">Filter</label><input id="bwf-kev-q" type="search" placeholder="vendor, CVE, product…" autocomplete="off"></div>
+      </div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Added</th><th>CVE</th><th>Vendor</th><th>Product</th><th>Weakness</th><th>Due</th><th>Window</th><th>Ransomware</th></tr></thead>
+        <tbody data-bwf="kev-body"><tr><td colspan="8">Loading KEV catalog…</td></tr></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <section aria-label="Sources">
+    <div class="sec-head"><h2>Sources</h2><p class="meta">Status of each feed on the last scheduled pull.</p></div>
+    <div class="panel"><div class="health" data-bwf="health"><span class="meta">Loading…</span></div></div>
+  </section>
+
+  <footer>BWF-SAM 1.2-pub · BackwaterFx · Data: CISA KEV catalog and public RSS feeds. Headlines link to their publishers.</footer>
+</div>
+</div>
